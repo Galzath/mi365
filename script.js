@@ -307,7 +307,7 @@ Las descripciones deben ser persuasivas, claras para el usuario final y adecuada
     try {
         let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
         const payload = { contents: chatHistory };
-        const apiKey = "AIzaSyAuRplihiAtwNw2qd6_zqrXOJ8KXFIVy1Q"; // Clave API añadida manualmente
+        const apiKey = ""; // Clave API añadida manualmente
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, {
