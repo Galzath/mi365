@@ -80,8 +80,8 @@ function populateDashboardKpis(kpis) {
     if (document.getElementById('kpi-beneficios-activos')) document.getElementById('kpi-beneficios-activos').textContent = kpis.beneficiosActivos;
     if (document.getElementById('kpi-acuerdos-vigentes')) document.getElementById('kpi-acuerdos-vigentes').textContent = kpis.acuerdosVigentes;
     if (document.getElementById('kpi-marcas-asignadas')) document.getElementById('kpi-marcas-asignadas').textContent = kpis.marcasAsignadas;
-    if (document.getElementById('kpi-alertas-criticas')) document.getElementById('kpi-alertas-criticas').textContent = kpis.alertasCriticas;
-    if (document.getElementById('kpi-tareas-pendientes')) document.getElementById('kpi-tareas-pendientes').textContent = kpis.tareasPendientes;
+    if (document.getElementById('kpi-alertas-criticas')) document.getElementById('kpi-alertas-criticas').textContent = "99"; // Test value
+    if (document.getElementById('kpi-tareas-pendientes')) document.getElementById('kpi-tareas-pendientes').textContent = "77"; // Test value
 }
 function populateMarcasRecientes(marcas) {
     const tbody = document.getElementById('marcas-recientes-tbody');
