@@ -196,8 +196,12 @@
                 <h1 class="text-xl font-semibold">Gestión de Marcas</h1>
                 <a href="#alta-marca" class="navigate-link btn btn-accent-primary text-xs">+ Registrar Nueva Marca</a>
             </div>
+            <div class="mb-4"> {/* Added search input here */}
+                <label for="search-marcas-input" class="sr-only">Buscar Marcas</label>
+                <input type="search" id="search-marcas-input" placeholder="Buscar por nombre o CUIT..." class="form-input w-full md:w-1/2 lg:w-1/3">
+            </div>
             <div class="panel p-4 rounded-lg">
-                <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 14rem);">
+                <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 18rem);">  {/* Adjusted max-height */}
                     <table class="min-w-full compact-table">
                         <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
                             <tr>
@@ -220,8 +224,9 @@
                 <h1 class="text-xl font-semibold">Gestión de Beneficios</h1>
                 <a href="#gestion-beneficio" data-mode="crear" class="navigate-link btn btn-accent-primary text-xs">+ Crear Nuevo Beneficio</a>
             </div>
+            {/* Search bar removed from here */}
             <div class="panel p-4 rounded-lg">
-                 <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 14rem);">
+                <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 14rem);"> {/* Reverted max-height */}
                     <table class="min-w-full compact-table">
                         <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
                             <tr>
@@ -292,5 +297,6 @@
     </template>
 
     <script src="script.js" defer></script>
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
 </body>
 </html>

@@ -14,15 +14,15 @@
     --color-border-input-focus: var(--color-accent-primary);
 
     --color-accent-primary: #17d894; /* Cian/Turquesa vibrante */
-    --color-accent-primary-hover: #17d894; /* Cian/Turquesa más oscuro para hover */
+    --color-accent-primary-hover: #14b880; /* Cian/Turquesa más oscuro para hover */
     --color-accent-secondary: #549adc; /* Magenta/Violeta eléctrico */
-    --color-accent-secondary-hover: #549adc;
+    --color-accent-secondary-hover: #4a8acc; /* Magenta/Violeta más oscuro para hover */
 
     /* Colores para estados (pueden ajustarse) */
     --color-success: #34D399; /* Emerald 400 */
     --color-warning: #FBBF24; /* Amber 400 */
     --color-danger: #F87171;  /* Red 400 */
-    --color-info: var(--color-accent-primary);
+    --color-info: var(--color-accent-secondary); /* Changed for better distinction from success */
 }
 
 body {
@@ -50,7 +50,7 @@ nav.shadow-sm { /* Selector del HTML del dev */
     background-color: transparent;
     /* Opcional: un pequeño borde o efecto de brillo */
     /* text-shadow: 0 0 5px var(--color-accent-primary); */
-    padding: 1px 0px; /* Ajustar para que no tenga tanto fondo */
+    padding: 2px 4px; /* Adjusted for more breathing room */
     margin-left: 1px;
     font-size: 0.9em;
     font-weight: 800;
@@ -63,7 +63,7 @@ nav.shadow-sm { /* Selector del HTML del dev */
 .logo-mi365-login .logo-365-number {
     color: var(--color-accent-primary);
     background-color: transparent;
-    padding: 1px 0px;
+    padding: 2px 4px; /* Adjusted for more breathing room */
     margin-left: 1px;
     font-size: 0.9em;
     font-weight: 800;
@@ -73,20 +73,24 @@ nav.shadow-sm { /* Selector del HTML del dev */
 .main-header-link { 
     color: var(--color-text-secondary) !important; 
     opacity: 0.9;
+    padding: 0.5rem 0.75rem; /* Added for consistent sizing (py-2 px-3) */
+    border-radius: 0.375rem; /* Added for consistent rounded corners on hover/active */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out; /* Smooth transition */
 }
 .main-header-link:hover {
     opacity: 1;
     color: var(--color-accent-primary) !important; 
-    background-color: rgba(34, 211, 238, 0.05) !important; /* Muy sutil hover de fondo */
+    background-color: rgba(23, 216, 148, 0.05) !important; /* Corrected RGB for --color-accent-primary with low opacity */
 }
 .main-header-link.active { 
     opacity: 1;
     font-weight: 600 !important;
     color: var(--color-accent-primary) !important; 
-    border-bottom: 2px solid var(--color-accent-primary);
-    background-color: transparent !important;
-    border-radius: 0 !important; /* Para que el borde inferior sea limpio */
-    padding-bottom: calc(0.5rem - 2px); /* Ajustar padding para el borde */
+    background-color: rgba(23, 216, 148, 0.1); /* Subtle background for active state */
+    /* Removed: border-bottom: 2px solid var(--color-accent-primary); */
+    /* Removed: background-color: transparent !important; */
+    /* Removed: border-radius: 0 !important; */
+    /* Removed: padding-bottom: calc(0.5rem - 2px); */
 }
 
 /* Menú de usuario en la cabecera */
@@ -229,3 +233,36 @@ html .shadow-xl { box-shadow: 0 20px 25px -5px rgba(255,255,255,0.02), 0 10px 10
 .bg-indigo-600 { background-color: var(--color-accent-primary) !important; }
 .hover\:bg-indigo-700:hover { background-color: var(--color-accent-primary-hover) !important; }
 .focus\:ring-offset-2:focus { ring-offset-color: var(--color-bg-surface) !important; }
+
+/* Toast Notification System */
+/* #toast-container is styled by Tailwind classes in HTML: fixed top-4 right-4 z-[100] space-y-2 */
+
+.toast-message {
+    padding: 0.75rem 1rem; /* py-3 px-4 */
+    border-radius: 0.375rem; /* rounded-md */
+    color: var(--color-text-on-accent);
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500;
+    /* Using pre-defined dark theme shadow directly */
+    box-shadow: 0 4px 6px -1px rgba(255,255,255,0.04), 0 2px 4px -1px rgba(255,255,255,0.03);
+    opacity: 0.95;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    margin-bottom: 0.5rem; /* Fallback if space-y is not used in container */
+}
+
+.toast-message.fade-out { /* Example fade-out class */
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.toast-success {
+    background-color: var(--color-success);
+}
+
+.toast-error {
+    background-color: var(--color-danger);
+}
+
+.toast-info {
+    background-color: var(--color-info);
+}

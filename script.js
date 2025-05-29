@@ -1,6 +1,10 @@
 // Global state variables
 let currentLoggedInUser = '';
 let isLoggedIn = false;
+let brandToEdit = null; // Variable to store brand being edited
+
+// LocalStorage Key
+const MARCAS_STORAGE_KEY = 'mi365_marcas';
 
 // DOM Elements Cache
 let userMenu, userMenuButton, userMenuText, logoutDropdown, logoutButton;
@@ -8,12 +12,15 @@ let loginSection, appContentSection, mainContent, mainNavigation;
 
 // --- Sample Data (Se mantienen los datos de ejemplo) ---
 const sampleKpis = { beneficiosActivos: 22, acuerdosVigentes: 18, marcasAsignadas: 10, alertasCriticas: 2, tareasPendientes: 5 };
-const sampleMarcas = [
-    { id: 1, nombre: "SuperTienda Online", cuit: "30-11223344-5", estado: "Activa", estadoColor: "green" },
-    { id: 2, nombre: "GastroBar Delicias", cuit: "30-55667788-9", estado: "Pendiente", estadoColor: "yellow" },
-    { id: 3, nombre: "TecnoSoluciones SRL", cuit: "30-99001122-3", estado: "Activa", estadoColor: "green" },
-    { id: 4, nombre: "Moda Urbana", cuit: "30-12341234-0", estado: "Inactiva", estadoColor: "red" },
+
+// Default structure for brands, now including all form fields
+let sampleMarcas = [
+    { id: 1, nombre: "SuperTienda Online", cuit: "30-11223344-5", domicilioLegal: "Av. Siempreviva 742", codigoPostal: "B1675", contactoNombre: "Lisa Simpson", contactoEmail: "lisa@example.com", estado: "Activa", estadoColor: "green" },
+    { id: 2, nombre: "GastroBar Delicias", cuit: "30-55667788-9", domicilioLegal: "Calle Falsa 123", codigoPostal: "C1000", contactoNombre: "Bart Simpson", contactoEmail: "bart@example.com", estado: "Pendiente", estadoColor: "yellow" },
+    { id: 3, nombre: "TecnoSoluciones SRL", cuit: "30-99001122-3", domicilioLegal: "Otra Calle 456", codigoPostal: "X5000", contactoNombre: "Homero Simpson", contactoEmail: "homero@example.com", estado: "Activa", estadoColor: "green" },
+    { id: 4, nombre: "Moda Urbana", cuit: "30-12341234-0", domicilioLegal: "Boulevard de los Sueños Rotos 789", codigoPostal: "Z9999", contactoNombre: "Marge Simpson", contactoEmail: "marge@example.com", estado: "Inactiva", estadoColor: "red" },
 ];
+
 const sampleBeneficios = [
     { id: 101, nombre: "30% Off Almuerzos", marca: "GastroBar Delicias", tipo: "Descuento %", estado: "Activo" },
     { id: 102, nombre: "Envío Gratis > $5K", marca: "SuperTienda Online", tipo: "Condicional", estado: "Activo" },
@@ -21,7 +28,7 @@ const sampleBeneficios = [
     { id: 104, nombre: "Liquidación Invierno", marca: "Moda Urbana", tipo: "Descuento %", estado: "Inactivo" },
 ];
 const sampleAlertas = [
-    { texto: "Acuerdo 'Promo Verano Flash' vence mañana.", tipo: "critical", icon: "🚨" }, // Usando emojis para un look más moderno
+    { texto: "Acuerdo 'Promo Verano Flash' vence mañana.", tipo: "critical", icon: "🚨" },
     { texto: "'GastroBar Delicias' aún no cargó beneficios.", tipo: "warning", icon: "🔔" },
     { texto: "Revisar nuevas solicitudes de marca.", tipo: "info", icon: "💡" }
 ];
@@ -38,6 +45,37 @@ const samplePerfiles = [
     { id: 'agente', nombre: "Agente Comercial", descripcion: "Gestión de cartera de marcas y beneficios." },
     { id: 'admin', nombre: "Administrador", descripcion: "Acceso total y configuración del sistema." }
 ];
+
+// --- LocalStorage Functions ---
+function saveMarcasToLocalStorage() {
+    localStorage.setItem(MARCAS_STORAGE_KEY, JSON.stringify(sampleMarcas));
+}
+
+function loadMarcasFromLocalStorage() {
+    const storedMarcas = localStorage.getItem(MARCAS_STORAGE_KEY);
+    if (storedMarcas) {
+        try {
+            const parsedMarcas = JSON.parse(storedMarcas);
+            if (Array.isArray(parsedMarcas)) {
+                // Ensure all loaded marcas have the new fields, providing defaults if missing from older data
+                sampleMarcas = parsedMarcas.map(marca => ({
+                    id: marca.id || Date.now(), // Should always have id
+                    nombre: marca.nombre || "",
+                    cuit: marca.cuit || "",
+                    domicilioLegal: marca.domicilioLegal || "",
+                    codigoPostal: marca.codigoPostal || "",
+                    contactoNombre: marca.contactoNombre || "",
+                    contactoEmail: marca.contactoEmail || "",
+                    estado: marca.estado || "Pendiente",
+                    estadoColor: marca.estadoColor || "yellow"
+                }));
+            }
+        } catch (error) {
+            console.error("Error parsing marcas from localStorage:", error);
+            // Keep default sampleMarcas if parsing fails
+        }
+    }
+}
 
 
 // --- Template Injection Function ---
@@ -59,9 +97,9 @@ function injectTemplate(templateId, targetElement) {
 // --- Helper Functions ---
 function createAlertListItem(alerta) {
     const li = document.createElement('li');
-    let bgColor = 'bg-sky-500/10'; // Tailwind: bg-sky-500 con opacidad
-    let textColor = 'text-sky-300'; // Tailwind: text-sky-300
-    let borderColor = 'border-sky-500'; // Tailwind: border-sky-500
+    let bgColor = 'bg-sky-500/10'; 
+    let textColor = 'text-sky-300'; 
+    let borderColor = 'border-sky-500';
 
     if (alerta.tipo === 'critical') {
         bgColor = 'bg-rose-500/10'; textColor = 'text-rose-300'; borderColor = 'border-rose-500';
@@ -75,19 +113,19 @@ function createAlertListItem(alerta) {
     return li;
 }
 
-// --- Data Population Functions (adaptadas para la nueva estética) ---
+// --- Data Population Functions ---
 function populateDashboardKpis(kpis) {
     if (document.getElementById('kpi-beneficios-activos')) document.getElementById('kpi-beneficios-activos').textContent = kpis.beneficiosActivos;
     if (document.getElementById('kpi-acuerdos-vigentes')) document.getElementById('kpi-acuerdos-vigentes').textContent = kpis.acuerdosVigentes;
     if (document.getElementById('kpi-marcas-asignadas')) document.getElementById('kpi-marcas-asignadas').textContent = kpis.marcasAsignadas;
-    if (document.getElementById('kpi-alertas-criticas')) document.getElementById('kpi-alertas-criticas').textContent = "99"; // Test value
-    if (document.getElementById('kpi-tareas-pendientes')) document.getElementById('kpi-tareas-pendientes').textContent = "77"; // Test value
+    if (document.getElementById('kpi-alertas-criticas')) document.getElementById('kpi-alertas-criticas').textContent = kpis.alertasCriticas;
+    if (document.getElementById('kpi-tareas-pendientes')) document.getElementById('kpi-tareas-pendientes').textContent = kpis.tareasPendientes;
 }
 function populateMarcasRecientes(marcas) {
     const tbody = document.getElementById('marcas-recientes-tbody');
     if (!tbody) return;
     tbody.innerHTML = '';
-    marcas.slice(0, 4).forEach(marca => { // Mostrar hasta 4 para densidad
+    marcas.slice(0, 4).forEach(marca => { 
         const tr = document.createElement('tr');
         tr.innerHTML = `<td class="compact-table text-[var(--color-text-primary)]">${marca.nombre}</td><td class="compact-table text-right"><span class="px-2 py-0.5 text-xxs font-semibold rounded-full bg-${marca.estadoColor}-500/20 text-${marca.estadoColor}-400">${marca.estado}</span></td>`;
         tbody.appendChild(tr);
@@ -110,6 +148,7 @@ function populateTablaGestionMarcas(marcas) {
         tbody.appendChild(tr);
     });
 }
+// ... (rest of populate functions remain the same) ...
 function populateTablaGestionBeneficios(beneficios) {
     const tbody = document.getElementById('tabla-beneficios-body');
     if (!tbody) return;
@@ -237,20 +276,142 @@ function attachUserMenuListeners() {
 function setupAltaMarcaFormListeners() {
     const form = document.getElementById('alta-marca-form');
     if (!form) return;
+
+    const titleElement = form.querySelector('h2');
+    const nombreComercialInput = form.querySelector('#nombre-comercial');
+    const nombreComercialError = form.querySelector('#nombre-comercial-error');
+    const cuitInput = form.querySelector('#cuit');
+    const cuitError = form.querySelector('#cuit-error');
+    const domicilioLegalInput = form.querySelector('#domicilio-legal');
+    const codigoPostalInput = form.querySelector('#codigo-postal');
+    const contactoNombreInput = form.querySelector('#contacto-nombre');
+    const contactoNombreError = form.querySelector('#contacto-nombre-error');
+    const contactoEmailInput = form.querySelector('#contacto-email');
+    const contactoEmailError = form.querySelector('#contacto-email-error');
+
     const submitButton = form.querySelector('#alta-marca-submit-button');
-    const successMessageDiv = form.querySelector('#form-success-message');
+    const successMessageDiv = form.querySelector('#form-success-message'); 
+    let existingHiddenIdInput = form.querySelector('#edit-brand-id');
+
+    const clearError = (errorElement) => {
+        if (errorElement) errorElement.textContent = '';
+    };
+
+    if (nombreComercialInput && nombreComercialError) nombreComercialInput.addEventListener('input', () => clearError(nombreComercialError));
+    if (cuitInput && cuitError) cuitInput.addEventListener('input', () => clearError(cuitError));
+    if (contactoNombreInput && contactoNombreError) contactoNombreInput.addEventListener('input', () => clearError(contactoNombreError));
+    if (contactoEmailInput && contactoEmailError) contactoEmailInput.addEventListener('input', () => clearError(contactoEmailError));
+
+    if (brandToEdit) {
+        if (titleElement) titleElement.textContent = `Editar Marca: ${brandToEdit.nombre}`;
+        if (nombreComercialInput) nombreComercialInput.value = brandToEdit.nombre;
+        if (cuitInput) cuitInput.value = brandToEdit.cuit;
+        if (domicilioLegalInput) domicilioLegalInput.value = brandToEdit.domicilioLegal || '';
+        if (codigoPostalInput) codigoPostalInput.value = brandToEdit.codigoPostal || '';
+        if (contactoNombreInput) contactoNombreInput.value = brandToEdit.contactoNombre || '';
+        if (contactoEmailInput) contactoEmailInput.value = brandToEdit.contactoEmail || '';
+
+        if (!existingHiddenIdInput) {
+            existingHiddenIdInput = document.createElement('input');
+            existingHiddenIdInput.type = 'hidden';
+            existingHiddenIdInput.id = 'edit-brand-id';
+            existingHiddenIdInput.name = 'editBrandId';
+            form.appendChild(existingHiddenIdInput);
+        }
+        existingHiddenIdInput.value = brandToEdit.id;
+    } else {
+        if (titleElement) titleElement.textContent = 'Registrar Nueva Marca';
+        if (nombreComercialInput) nombreComercialInput.value = '';
+        if (cuitInput) cuitInput.value = '';
+        if (domicilioLegalInput) domicilioLegalInput.value = '';
+        if (codigoPostalInput) codigoPostalInput.value = '';
+        if (contactoNombreInput) contactoNombreInput.value = '';
+        if (contactoEmailInput) contactoEmailInput.value = '';
+        if (existingHiddenIdInput) existingHiddenIdInput.remove();
+    }
+
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        if (successMessageDiv) {
-            successMessageDiv.textContent = 'Marca guardada exitosamente (simulado).';
-            successMessageDiv.classList.remove('hidden');
+        let isValid = true;
+
+        if (nombreComercialError) nombreComercialError.textContent = '';
+        if (cuitError) cuitError.textContent = '';
+        if (contactoNombreError) contactoNombreError.textContent = '';
+        if (contactoEmailError) contactoEmailError.textContent = '';
+        if (successMessageDiv) successMessageDiv.classList.add('hidden');
+
+        if (nombreComercialInput && !nombreComercialInput.value.trim()) {
+            if (nombreComercialError) nombreComercialError.textContent = 'El nombre comercial es obligatorio.';
+            isValid = false;
         }
+        const cuitValue = cuitInput ? cuitInput.value.trim() : '';
+        const cuitRegex = /^(\d{11}|\d{2}-\d{8}-\d{1})$/;
+        if (cuitInput && !cuitValue) {
+            if (cuitError) cuitError.textContent = 'El CUIT es obligatorio.';
+            isValid = false;
+        } else if (cuitInput && !cuitRegex.test(cuitValue)) {
+            if (cuitError) cuitError.textContent = 'Formato de CUIT inválido. Use XXXXXXXXXXX o XX-XXXXXXXX-X.';
+            isValid = false;
+        }
+        if (contactoNombreInput && !contactoNombreInput.value.trim()) {
+            if (contactoNombreError) contactoNombreError.textContent = 'El nombre de contacto es obligatorio.';
+            isValid = false;
+        }
+        const emailValue = contactoEmailInput ? contactoEmailInput.value.trim() : '';
+        const emailRegex = /^\S+@\S+\.\S+$/;
+        if (contactoEmailInput && !emailValue) {
+            if (contactoEmailError) contactoEmailError.textContent = 'El email de contacto es obligatorio.';
+            isValid = false;
+        } else if (contactoEmailInput && !emailRegex.test(emailValue)) {
+            if (contactoEmailError) contactoEmailError.textContent = 'Formato de email inválido.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showToast('Por favor, corrija los errores en el formulario.', 'error');
+            return; 
+        }
+
+        const hiddenIdInput = form.querySelector('#edit-brand-id');
+        const isEditMode = hiddenIdInput && hiddenIdInput.value;
+        
+        const marcaData = {
+            nombre: nombreComercialInput.value.trim(),
+            cuit: cuitInput.value.trim(),
+            domicilioLegal: domicilioLegalInput.value.trim(),
+            codigoPostal: codigoPostalInput.value.trim(),
+            contactoNombre: contactoNombreInput.value.trim(),
+            contactoEmail: contactoEmailInput.value.trim(),
+        };
+
+        if (isEditMode) {
+            const idToUpdate = parseInt(hiddenIdInput.value, 10);
+            const brandIndex = sampleMarcas.findIndex(m => m.id === idToUpdate);
+            if (brandIndex !== -1) {
+                sampleMarcas[brandIndex] = { 
+                    ...sampleMarcas[brandIndex], // Preserve existing fields like estado, estadoColor
+                    ...marcaData, 
+                    id: idToUpdate // Ensure ID is not overwritten by marcaData if it doesn't have it
+                };
+            }
+        } else {
+            marcaData.id = Date.now(); // Simple unique ID for new brands
+            marcaData.estado = "Pendiente"; // Default estado for new brands
+            marcaData.estadoColor = "yellow"; // Default estadoColor for new brands
+            sampleMarcas.push(marcaData);
+        }
+        
+        saveMarcasToLocalStorage();
+        showToast(isEditMode ? 'Marca actualizada exitosamente!' : 'Marca guardada exitosamente!', 'success');
+        
         if (submitButton) {
             submitButton.textContent = 'Guardando...';
             submitButton.disabled = true;
         }
-        setTimeout(() => { 
-            if (window.location.hash.startsWith('#alta-marca')) window.location.hash = '#gestion-marcas'; 
+        
+        setTimeout(() => {
+            brandToEdit = null; 
+            if (window.location.hash.startsWith('#alta-marca')) window.location.hash = '#gestion-marcas';
         }, 1500);
     });
 }
@@ -273,11 +434,10 @@ async function handleGenerarDescripcionIA() {
     const descripcionBeneficioTextarea = document.getElementById('gb-descripcion-beneficio');
     const sugerenciasContainer = document.getElementById('ia-sugerencias-container');
     const spinner = document.getElementById('spinner-descripcion-ia');
-    const errorMessageDiv = document.getElementById('ia-error-message');
 
-    if (!nombreBeneficioInput || !tipoBeneficioSelect || !valorBeneficioInput || !descripcionBeneficioTextarea || !spinner || !errorMessageDiv || !sugerenciasContainer) {
+    if (!nombreBeneficioInput || !tipoBeneficioSelect || !valorBeneficioInput || !descripcionBeneficioTextarea || !spinner || !sugerenciasContainer) {
         console.error("Faltan elementos del DOM para la generación IA.");
-        if(errorMessageDiv) { errorMessageDiv.textContent = "Error: Faltan elementos en la página."; errorMessageDiv.classList.remove('hidden'); }
+        showToast("Error: Faltan elementos en la página para la IA.", 'error');
         return;
     }
 
@@ -288,70 +448,62 @@ async function handleGenerarDescripcionIA() {
     const marca = marcaAsociadaSelect && marcaAsociadaSelect.value ? marcaAsociadaSelect.options[marcaAsociadaSelect.selectedIndex].text : "una marca asociada";
 
     if (!nombre.trim()) {
-        if(errorMessageDiv) { errorMessageDiv.textContent = "Por favor, ingrese el nombre del beneficio."; errorMessageDiv.classList.remove('hidden'); }
-        setTimeout(() => { if(errorMessageDiv) errorMessageDiv.classList.add('hidden'); }, 3000);
+        showToast("Por favor, ingrese el nombre del beneficio.", 'error');
         return;
     }
 
     spinner.classList.remove('hidden');
-    if(errorMessageDiv) errorMessageDiv.classList.add('hidden');
     descripcionBeneficioTextarea.disabled = true;
     sugerenciasContainer.innerHTML = ''; 
 
-    const prompt = `Eres un experto en marketing de Clarín 365 en Argentina. Para la marca "${marca}", genera tres (3) opciones de descripción atractivas y concisas (máximo 2 frases cortas cada una) para el siguiente beneficio. Numera cada sugerencia del 1 al 3:
-Nombre del beneficio: "${nombre}"
-Tipo de beneficio: "${tipo}"
-Valor/detalle: "${valor}"
-Las descripciones deben ser persuasivas, claras para el usuario final y adecuadas para el mercado argentino.`;
+    setTimeout(() => {
+        try {
+            const mockApiResponse = {
+                candidates: [
+                    {
+                        content: {
+                            parts: [
+                                {
+                                    text: `1. ¡Disfrutá de un ${nombre} con ${marca}! ${tipo} de ${valor} para vos.\n2. ${marca} te trae un ${nombre} imperdible. ¡Aprovechá este ${tipo} de ${valor}!\n3. Tu ${nombre} soñado está en ${marca}. Un ${tipo} de ${valor} que no podés dejar pasar.`
+                                }
+                            ]
+                        }
+                    }
+                ]
+            };
 
-    try {
-        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-        const payload = { contents: chatHistory };
-        const apiKey = ""; // Clave API añadida manualmente
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-        
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+            if (mockApiResponse.candidates && mockApiResponse.candidates.length > 0 && mockApiResponse.candidates[0].content && mockApiResponse.candidates[0].content.parts && mockApiResponse.candidates[0].content.parts.length > 0) {
+                const text = mockApiResponse.candidates[0].content.parts[0].text;
+                const suggestions = text.split(/\n\d+\.\s*|\n-\s*/).map(s => s.replace(/^\d+\.\s*/, '').trim()).filter(s => s.length > 5);
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Error de la API: ${response.status} ${response.statusText}. Detalles: ${JSON.stringify(errorData)}`);
-        }
-        const result = await response.json();
-        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
-            const text = result.candidates[0].content.parts[0].text;
-            const suggestions = text.split(/\n\d+\.\s*|\n-\s*/).map(s => s.replace(/^\d+\.\s*/, '').trim()).filter(s => s.length > 5); 
-            
-            if (suggestions.length > 0) {
-                descripcionBeneficioTextarea.value = suggestions[0]; 
-                suggestions.forEach((sug, index) => {
-                    const p = document.createElement('p');
-                    p.className = 'text-xs text-[var(--color-text-secondary)] bg-slate-100 dark:bg-slate-700 p-2 mt-1 rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 border border-[var(--color-border)]';
-                    p.textContent = `${sug}`; 
-                    p.onclick = () => { 
-                        descripcionBeneficioTextarea.value = sug; 
-                        sugerenciasContainer.querySelectorAll('p').forEach(el => el.classList.remove('bg-indigo-100', 'dark:bg-indigo-700', 'border-indigo-400', 'dark:border-indigo-500'));
-                        p.classList.add('bg-indigo-100', 'dark:bg-indigo-700', 'border-indigo-400', 'dark:border-indigo-500');
-                    };
-                    sugerenciasContainer.appendChild(p);
-                });
+                if (suggestions.length > 0) {
+                    descripcionBeneficioTextarea.value = suggestions[0];
+                    suggestions.forEach((sug, index) => {
+                        const p = document.createElement('p');
+                        p.className = 'text-xs text-[var(--color-text-secondary)] bg-slate-100 dark:bg-slate-700 p-2 mt-1 rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 border border-[var(--color-border)]';
+                        p.textContent = `${sug}`;
+                        p.onclick = () => {
+                            descripcionBeneficioTextarea.value = sug;
+                            sugerenciasContainer.querySelectorAll('p').forEach(el => el.classList.remove('bg-indigo-100', 'dark:bg-indigo-700', 'border-indigo-400', 'dark:border-indigo-500'));
+                            p.classList.add('bg-indigo-100', 'dark:bg-indigo-700', 'border-indigo-400', 'dark:border-indigo-500');
+                        };
+                        sugerenciasContainer.appendChild(p);
+                    });
+                } else {
+                    descripcionBeneficioTextarea.value = text.trim();
+                }
+                showToast('Descripciones generadas!', 'success');
             } else {
-                 descripcionBeneficioTextarea.value = text.trim(); 
+                throw new Error("No se pudo obtener una descripción de la IA simulada. Formato de respuesta inesperado.");
             }
-
-        } else {
-            throw new Error("No se pudo obtener una descripción de la IA. Formato de respuesta inesperado.");
+        } catch (error) {
+            console.error("Error al generar descripción con IA (simulada):", error);
+            showToast(`Error al generar (simulado): ${error.message}. Intenta de nuevo.`, 'error');
+        } finally {
+            spinner.classList.add('hidden');
+            descripcionBeneficioTextarea.disabled = false;
         }
-    } catch (error) {
-        console.error("Error al generar descripción con IA:", error);
-        if(errorMessageDiv) { errorMessageDiv.textContent = `Error al generar: ${error.message}. Intenta de nuevo.`; errorMessageDiv.classList.remove('hidden');}
-    } finally {
-        spinner.classList.add('hidden');
-        descripcionBeneficioTextarea.disabled = false;
-    }
+    }, 1500); 
 }
 
 // --- Content Loading and Routing ---
@@ -379,9 +531,23 @@ function loadContent(page) {
     let templateId = '';
     let targetElementForInjection = (page === 'login') ? loginSection : appContentSection;
 
+    if (page !== 'alta-marca' || !window.location.hash.includes('?id=')) {
+        brandToEdit = null;
+    }
+
     switch (page) {
         case 'dashboard': templateId = 'dashboard-template'; break;
-        case 'alta-marca': templateId = 'alta-marca-template'; break;
+        case 'alta-marca':
+            templateId = 'alta-marca-template';
+            const urlParamsAltaMarca = new URLSearchParams(window.location.hash.split('?')[1]);
+            const brandId = urlParamsAltaMarca.get('id');
+            if (brandId) {
+                const idToFind = parseInt(brandId, 10);
+                brandToEdit = sampleMarcas.find(marca => marca.id === idToFind) || null;
+            } else {
+                brandToEdit = null; 
+            }
+            break;
         case 'gestion-beneficio': templateId = 'gestion-beneficio-template'; break;
         case 'configuracion': templateId = 'configuracion-template'; break;
         case 'gestion-marcas': templateId = 'gestion-marcas-template'; break;
@@ -445,12 +611,26 @@ function loadContent(page) {
             setupCambiarContrasenaFormListeners();
         } else if (page === 'gestion-marcas') {
             populateTablaGestionMarcas(sampleMarcas);
+            const searchInputMarcas = document.getElementById('search-marcas-input');
+            if (searchInputMarcas) {
+                searchInputMarcas.addEventListener('input', function(event) {
+                    const searchTerm = event.target.value.toLowerCase();
+                    if (!searchTerm) {
+                        populateTablaGestionMarcas(sampleMarcas);
+                    } else {
+                        const filteredMarcas = sampleMarcas.filter(marca => {
+                            return (marca.nombre && marca.nombre.toLowerCase().includes(searchTerm)) ||
+                                   (marca.cuit && marca.cuit.toLowerCase().includes(searchTerm));
+                        });
+                        populateTablaGestionMarcas(filteredMarcas);
+                    }
+                });
+            }
         } else if (page === 'gestion-beneficios') {
             populateTablaGestionBeneficios(sampleBeneficios);
         }
     }
     
-    // Update active class on nav links using the CSS class '.active'
     document.querySelectorAll('#main-navigation .main-header-link').forEach(link => {
         link.classList.remove('active'); 
         if (link.getAttribute('href') === `#${page}`) {
@@ -470,7 +650,6 @@ function router() {
     loadContent(requestedPage);
 }
 
-// --- App Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     userMenu = document.getElementById('user-menu');
     userMenuButton = document.getElementById('user-menu-button');
@@ -488,6 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
+    loadMarcasFromLocalStorage(); // Load marcas before first route
     updateNavbarUI();
     attachUserMenuListeners();
     
@@ -498,5 +678,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('hashchange', router);
-    router(); 
+    router(); // Initial call to load content based on current hash
 });
+
+// --- Toast Notification Function ---
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) {
+        console.error('Toast container not found! Make sure <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div> is in index.html');
+        return;
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast-message toast-${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('fade-out'); 
+        toast.addEventListener('transitionend', () => {
+            if(toast.parentNode) toast.remove();
+        });
+        setTimeout(() => {
+             if(toast.parentNode) toast.remove();
+        }, 500); 
+    }, duration);
+}
