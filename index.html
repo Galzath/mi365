@@ -3,32 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi365 - Prototipo Navegable</title>
+    <title>Mi365 - NovaTech</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/heroicons@1.0.6/dist/outline/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[var(--color-bg-main)] text-[var(--color-text-primary)]">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm fixed w-full top-0 left-0 z-50">
+    <nav class="shadow-sm fixed w-full top-0 left-0 z-50"> 
         <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-3">
-                <div class="flex items-center space-x-4">
-                    <a href="#dashboard" class="navigate-link text-2xl font-extrabold"><span class="text-[var(--color-text-on-accent)]">Mi365</span></a>
+            <div class="flex justify-between items-center py-3 h-16">
+                <div class="flex items-center space-x-6">
+                    <a href="#dashboard" class="navigate-link text-2xl font-extrabold logo-mi365-header">
+                        <span class="logo-mi">Mi</span><span class="logo-365-number">365</span>
+                    </a>
+                    <div id="main-navigation" class="hidden md:flex items-center space-x-1">
+                        <a href="#dashboard" id="nav-dashboard" class="navigate-link main-header-link px-3 py-2">Dashboard</a>
+                        <a href="#gestion-marcas" id="nav-gestion-marcas" class="navigate-link main-header-link px-3 py-2">Marcas</a>
+                        <a href="#gestion-beneficios" id="nav-gestion-beneficios" class="navigate-link main-header-link px-3 py-2">Beneficios</a>
+                        <a href="#configuracion" id="nav-configuracion" class="navigate-link main-header-link px-3 py-2">Configuración</a>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <!-- User menu - Initially hidden, shown after login -->
+                <div class="flex items-center space-x-3">
                     <div id="user-menu" class="relative hidden">
-                        <button class="flex items-center space-x-2 focus:outline-none">
-                            <span id="user-menu-text" class="text-sm font-medium text-gray-700">Usuario</span>
-                            <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none p-1 rounded-full hover:bg-[rgba(255,255,255,0.05)]">
+                            <img id="user-avatar" class="h-8 w-8 rounded-full object-cover ring-1 ring-[var(--color-accent-primary)]" src="https://placehold.co/80x80/7D8590/E6EDF3?text=U" alt="User Avatar">
+                            <span id="user-menu-text" class="text-sm font-medium">Usuario</span>
+                            <svg class="h-5 w-5 opacity-70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>
-                        <div id="logout-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-50">
-                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar Sesión</a>
+                        <div id="logout-dropdown" class="absolute right-0 mt-2 w-56 rounded-md shadow-lg py-1 hidden z-50">
+                            <div class="px-4 py-3">
+                                <p class="text-sm">Sesión iniciada como</p>
+                                <p id="dropdown-user-email" class="text-sm font-medium truncate">usuario@example.com</p>
+                            </div>
+                            <div class="border-t"></div>
+                            <a href="#configuracion" class="navigate-link block px-4 py-2 text-sm">Mi Perfil / Configuración</a>
+                            <a href="#" id="logout-button" class="block px-4 py-2 text-sm">Cerrar Sesión</a>
                         </div>
                     </div>
                 </div>
@@ -36,36 +48,34 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <main id="main-content" class="pt-16"> <!-- pt-16 for fixed navbar height -->
-        <!-- Login Section -->
-        <section id="login-section" class="flex flex-col items-center justify-center min-h-screen -mt-16">
-            <!-- Content will be injected from login-template -->
+    <main id="main-content" class="pt-16">
+        <section id="login-section" class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]">
+            {/* Contenido del login se inyectará aquí */}
         </section>
-
-        <!-- Dashboard Section - Initially hidden -->
-        <section id="dashboard-section" class="hidden p-3 md:p-6 lg:p-8">
-            <!-- Content will be injected from dashboard-template -->
+        <section id="app-content-section" class="hidden p-3 md:p-4 lg:p-6">
+            {/* Contenido del dashboard y otras vistas se inyectará aquí */}
         </section>
     </main>
 
-    <!-- TEMPLATES -->
-
-    <!-- Login Template -->
     <template id="login-template">
-        <div id="login-form-container" class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold text-center text-gray-900">Iniciar Sesión</h2>
-            <form id="login-form" class="space-y-6">
+        <div id="login-form-container" class="w-full max-w-sm p-6 sm:p-8 space-y-6 panel rounded-xl shadow-2xl">
+            <div class="flex justify-center">
+                 <div class="text-4xl font-extrabold logo-mi365-login">
+                    <span class="logo-mi">Mi</span><span class="logo-365-number">365</span>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-center mt-4">Iniciar Sesión</h2>
+            <form id="login-form" class="space-y-5">
                 <div>
-                    <label for="email-address" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                    <input id="email-address" name="email" type="email" autocomplete="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="tu@email.com" value="test@example.com">
+                    <label for="email-address" class="form-label">Correo Electrónico</label>
+                    <input id="email-address" name="email" type="email" autocomplete="email" required class="form-input mt-1" placeholder="tu@email.com" value="test@example.com">
                 </div>
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="********" value="password">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required class="form-input mt-1" placeholder="********" value="password">
                 </div>
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium btn-accent-primary">
                         Ingresar
                     </button>
                 </div>
@@ -73,222 +83,210 @@
         </div>
     </template>
 
-    <!-- Dashboard Template -->
     <template id="dashboard-template">
         <div class="container mx-auto">
-            <h1 class="text-2xl font-semibold text-gray-800 mb-6">Panel de Control</h1>
-            
-            <!-- KPIs Section -->
+            <h1 class="text-2xl font-semibold mb-6">Panel de Control del Agente</h1>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 class="text-sm font-medium text-gray-500">Beneficios Activos</h3>
-                    <p class="text-2xl font-bold text-indigo-600" id="kpi-beneficios-activos">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 class="text-sm font-medium text-gray-500">Acuerdos Vigentes</h3>
-                    <p class="text-2xl font-bold text-indigo-600" id="kpi-acuerdos-vigentes">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 class="text-sm font-medium text-gray-500">Marcas Asignadas</h3>
-                    <p class="text-2xl font-bold text-indigo-600" id="kpi-marcas-asignadas">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 class="text-sm font-medium text-gray-500">Alertas Críticas</h3>
-                    <p class="text-2xl font-bold text-red-600" id="kpi-alertas-criticas">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 class="text-sm font-medium text-gray-500">Tareas Pendientes</h3>
-                    <p class="text-2xl font-bold text-yellow-600" id="kpi-tareas-pendientes">0</p>
-                </div>
+                <div class="kpi-card p-4 rounded-lg shadow text-center"><h3 class="text-xs font-medium text-[var(--color-text-secondary)] uppercase">Beneficios Activos</h3><p class="text-3xl font-bold kpi-value mt-1" id="kpi-beneficios-activos">0</p></div>
+                <div class="kpi-card p-4 rounded-lg shadow text-center"><h3 class="text-xs font-medium text-[var(--color-text-secondary)] uppercase">Acuerdos Vigentes</h3><p class="text-3xl font-bold kpi-value mt-1" id="kpi-acuerdos-vigentes">0</p></div>
+                <div class="kpi-card p-4 rounded-lg shadow text-center"><h3 class="text-xs font-medium text-[var(--color-text-secondary)] uppercase">Marcas Asignadas</h3><p class="text-3xl font-bold kpi-value mt-1" id="kpi-marcas-asignadas">0</p></div>
+                <div class="kpi-card p-4 rounded-lg shadow text-center"><h3 class="text-xs font-medium text-[var(--color-text-secondary)] uppercase">Alertas Críticas</h3><p class="text-3xl font-bold text-[var(--color-danger)] mt-1" id="kpi-alertas-criticas">0</p></div>
+                <div class="kpi-card p-4 rounded-lg shadow text-center"><h3 class="text-xs font-medium text-[var(--color-text-secondary)] uppercase">Tareas Pendientes</h3><p class="text-3xl font-bold text-[var(--color-warning)] mt-1" id="kpi-tareas-pendientes">0</p></div>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                <!-- Columna 1 -->
-                <div class="lg:col-span-1 space-y-3 flex flex-col">
-                    <div class="panel p-3 rounded-md flex-grow flex flex-col dashboard-panel-flexible">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Mis Marcas Recientes</h2>
-                        <div class="table-container flex-grow" style="max-height: 300px; overflow-y: auto;">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marca</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th></tr></thead>
-                                <tbody id="marcas-recientes-tbody" class="bg-white divide-y divide-gray-200">
-                                    <!-- Content will be populated by script.js -->
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="max-height: calc(100vh - 18rem); overflow: hidden;">
+                <div class="lg:col-span-1 space-y-4 flex flex-col" style="max-height: 100%; overflow: hidden;">
+                    <div class="panel p-4 rounded-lg flex-grow flex flex-col dashboard-panel-flexible shadow-lg">
+                        <h2 class="text-lg font-semibold mb-3">Mis Marcas Recientes</h2>
+                        <div class="table-container flex-grow"><table class="min-w-full"><thead class="sticky top-0 bg-[var(--color-bg-surface)]"><tr><th class="compact-table text-left">Marca</th><th class="compact-table text-left">Estado</th></tr></thead><tbody id="marcas-recientes-tbody" class="divide-y divide-[var(--color-border)]"></tbody></table></div>
+                         <a href="#gestion-marcas" class="navigate-link mt-2 text-xs text-[var(--color-accent-primary)] hover:underline self-start">Ver todas mis marcas</a>
                     </div>
-                    <div class="panel p-3 rounded-md">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Acciones Rápidas</h2>
-                        <div class="space-y-2">
-                            <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-md text-sm">Registrar Nueva Marca</button>
-                            <button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-md text-sm" onclick="window.location.hash='#gestion-beneficio';">Gestionar Beneficio (Test)</button>
+                     <div class="panel p-4 rounded-lg shadow-lg">
+                        <h2 class="text-lg font-semibold mb-3">Acciones Rápidas</h2>
+                         <div class="grid grid-cols-2 gap-2">
+                            <a href="#alta-marca" class="navigate-link text-sm btn-outline-accent text-center py-2 rounded-md">Nueva Marca</a>
+                            <a href="#gestion-beneficio" data-mode="crear" class="navigate-link text-sm btn-accent-primary text-center py-2 rounded-md">Nuevo Beneficio</a>
                         </div>
                     </div>
                 </div>
-                <!-- Columna 2 -->
-                <div class="lg:col-span-1 space-y-3 flex flex-col">
-                    <div class="panel p-3 rounded-md flex-grow flex flex-col dashboard-panel-flexible">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Alertas Importantes</h2>
-                        <ul id="alertas-importantes-list" class="list-none space-y-2 text-sm flex-grow" style="max-height: 150px; overflow-y: auto;">
-                            <!-- Content will be populated by script.js -->
-                        </ul>
-                    </div>
-                    <div class="panel p-3 rounded-md flex-grow flex flex-col dashboard-panel-flexible">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Beneficios por Vencer</h2>
-                        <ul id="beneficios-vencer-list" class="list-disc list-inside space-y-1 text-sm text-yellow-800 flex-grow" style="max-height: 150px; overflow-y: auto;">
-                            <!-- Content will be populated by script.js -->
-                        </ul>
-                    </div>
+                <div class="lg:col-span-1 space-y-4 flex flex-col">
+                    <div class="panel p-4 rounded-lg flex-grow flex flex-col dashboard-panel-flexible shadow-lg"><h2 class="text-lg font-semibold mb-3">Alertas Importantes</h2><ul id="alertas-importantes-list" class="list-none space-y-2 text-sm flex-grow overflow-y-auto" style="max-height: 180px;"></ul> <a href="#" class="mt-2 text-xs text-[var(--color-accent-primary)] hover:underline self-start">Ver todas las alertas</a></div>
+                    <div class="panel p-4 rounded-lg flex-grow flex flex-col dashboard-panel-flexible shadow-lg"><h2 class="text-lg font-semibold mb-3">Beneficios por Vencer</h2><ul id="beneficios-vencer-list" class="list-disc list-inside space-y-1 text-sm text-[var(--color-warning)] flex-grow overflow-y-auto" style="max-height: 180px;"></ul></div>
                 </div>
-                <!-- Columna 3 -->
-                <div class="lg:col-span-1 space-y-3 flex flex-col">
-                    <div class="panel p-3 rounded-md flex-grow flex flex-col dashboard-panel-flexible">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Sugerencias IA</h2>
-                        <ul id="sugerencias-ia-list" class="list-disc list-inside space-y-1 text-sm text-blue-600 flex-grow" style="max-height: 150px; overflow-y: auto;">
-                            <!-- Content will be populated by script.js -->
-                        </ul>
-                    </div>
-                    <div class="panel p-3 rounded-md flex-grow flex flex-col dashboard-panel-flexible">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Rendimiento General</h2>
-                        <div class="chart-container flex-grow" style="position: relative; height:150px">
-                            <canvas id="performanceChart"></canvas>
-                        </div>
-                    </div>
+                <div class="lg:col-span-1 space-y-4 flex flex-col">
+                    <div class="panel p-4 rounded-lg flex-grow flex flex-col dashboard-panel-flexible shadow-lg"><h2 class="text-lg font-semibold mb-3">Sugerencias IA</h2><ul id="sugerencias-ia-list" class="list-disc list-inside space-y-1 text-sm text-[var(--color-accent-primary)] flex-grow overflow-y-auto" style="max-height: 180px;"></ul> <a href="#" class="mt-2 text-xs text-[var(--color-accent-primary)] hover:underline self-start">Ver todas las sugerencias</a></div>
+                    <div class="panel p-4 rounded-lg flex-grow flex flex-col dashboard-panel-flexible shadow-lg"><h2 class="text-lg font-semibold mb-3">Rendimiento General</h2><div class="chart-container flex-grow" style="position: relative; height:180px"><canvas id="performanceChart"></canvas></div></div>
                 </div>
             </div>
         </div>
     </template>
 
-    <!-- Alta Marca Template -->
     <template id="alta-marca-template">
-        <div class="container mx-auto p-4 md:p-8">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Registrar Nueva Marca</h2>
-            <form id="alta-marca-form" class="bg-white p-6 rounded-lg shadow-md space-y-6">
-                <div id="form-success-message" class="hidden text-green-600 bg-green-100 p-3 rounded-md mb-4"></div>
-
-                <!-- Datos de la Marca -->
-                <fieldset class="border p-4 rounded-md">
-                    <legend class="text-lg font-medium text-gray-700 px-2">Datos de la Marca</legend>
+        <div class="container mx-auto p-4 md:p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Registrar Nueva Marca</h2>
+                <a href="#gestion-marcas" class="navigate-link text-sm text-[var(--color-accent-primary)] hover:underline">&larr; Volver a Gestión de Marcas</a>
+            </div>
+            <form id="alta-marca-form" class="panel p-6 rounded-lg shadow-lg space-y-6">
+                <div id="form-success-message" class="hidden text-[var(--color-success)] bg-green-500/10 p-3 rounded-md mb-4 border border-green-500/30"></div>
+                <fieldset class="border border-[var(--color-border)] p-4 rounded-md">
+                    <legend class="text-lg font-medium px-2">Datos de la Marca</legend>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                        <div>
-                            <label for="nombre-comercial" class="block text-sm font-medium text-gray-700">Nombre Comercial / Denominación</label>
-                            <input type="text" id="nombre-comercial" name="nombre-comercial" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <div class="text-red-500 text-xs mt-1" id="nombre-comercial-error"></div>
-                        </div>
-                        <div>
-                            <label for="cuit" class="block text-sm font-medium text-gray-700">CUIT del Titular</label>
-                            <input type="text" id="cuit" name="cuit" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="XX-XXXXXXXX-X">
-                            <div class="text-red-500 text-xs mt-1" id="cuit-error"></div>
-                        </div>
-                        <div>
-                            <label for="domicilio-legal" class="block text-sm font-medium text-gray-700">Domicilio Legal</label>
-                            <input type="text" id="domicilio-legal" name="domicilio-legal" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="codigo-postal" class="block text-sm font-medium text-gray-700">Código Postal</label>
-                            <input type="text" id="codigo-postal" name="codigo-postal" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="pais" class="block text-sm font-medium text-gray-700">País</label>
-                            <input type="text" id="pais" name="pais" value="Argentina" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-                         <div>
-                            <label for="clase-niza" class="block text-sm font-medium text-gray-700">Clase Niza</label>
-                            <input type="text" id="clase-niza" name="clase-niza" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ej: 9, 25, 41">
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <label for="productos-servicios" class="block text-sm font-medium text-gray-700">Productos / Servicios a distinguir</label>
-                        <textarea id="productos-servicios" name="productos-servicios" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        <div><label for="nombre-comercial" class="form-label">Nombre Comercial <span class="text-red-500">*</span></label><input type="text" id="nombre-comercial" name="nombre-comercial" required class="form-input mt-1"><div class="text-red-500 text-xs mt-1" id="nombre-comercial-error"></div></div>
+                        <div><label for="cuit" class="form-label">CUIT <span class="text-red-500">*</span></label><input type="text" id="cuit" name="cuit" required class="form-input mt-1" placeholder="XX-XXXXXXXX-X"><div class="text-red-500 text-xs mt-1" id="cuit-error"></div></div>
+                        <div><label for="domicilio-legal" class="form-label">Domicilio Legal</label><input type="text" id="domicilio-legal" name="domicilio-legal" class="form-input mt-1"></div>
+                        <div><label for="codigo-postal" class="form-label">Código Postal</label><input type="text" id="codigo-postal" name="codigo-postal" class="form-input mt-1"></div>
                     </div>
                 </fieldset>
-
-                <!-- Documentación -->
-                <fieldset class="border p-4 rounded-md">
-                    <legend class="text-lg font-medium text-gray-700 px-2">Documentación</legend>
+                <fieldset class="border border-[var(--color-border)] p-4 rounded-md">
+                    <legend class="text-lg font-medium px-2">Datos de Contacto</legend>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                        <div>
-                            <label for="logo-input" class="block text-sm font-medium text-gray-700">Logo (opcional)</label>
-                            <input type="file" id="logo-input" name="logo-input" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100">
-                        </div>
-                        <div>
-                            <label for="certificado-registro-input" class="block text-sm font-medium text-gray-700">Certificado de Registro (si aplica)</label>
-                            <input type="file" id="certificado-registro-input" name="certificado-registro-input" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100">
-                        </div>
+                        <div><label for="contacto-nombre" class="form-label">Nombre del Contacto <span class="text-red-500">*</span></label><input type="text" id="contacto-nombre" name="contacto-nombre" required class="form-input mt-1"><div class="text-red-500 text-xs mt-1" id="contacto-nombre-error"></div></div>
+                        <div><label for="contacto-email" class="form-label">Email de Contacto <span class="text-red-500">*</span></label><input type="email" id="contacto-email" name="contacto-email" required class="form-input mt-1"><div class="text-red-500 text-xs mt-1" id="contacto-email-error"></div></div>
                     </div>
                 </fieldset>
+                <div class="flex justify-end"><button type="submit" id="alta-marca-submit-button" class="btn btn-accent-primary">Guardar Marca</button></div>
+            </form>
+        </div>
+    </template>
 
-                <!-- Datos de Contacto -->
-                <fieldset class="border p-4 rounded-md">
-                    <legend class="text-lg font-medium text-gray-700 px-2">Datos de Contacto</legend>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                        <div>
-                            <label for="contacto-nombre" class="block text-sm font-medium text-gray-700">Nombre del Contacto</label>
-                            <input type="text" id="contacto-nombre" name="contacto-nombre" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <div class="text-red-500 text-xs mt-1" id="contacto-nombre-error"></div>
-                        </div>
-                        <div>
-                            <label for="contacto-email" class="block text-sm font-medium text-gray-700">Email de Contacto</label>
-                            <input type="email" id="contacto-email" name="contacto-email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <div class="text-red-500 text-xs mt-1" id="contacto-email-error"></div>
-                        </div>
-                        <div>
-                            <label for="contacto-telefono" class="block text-sm font-medium text-gray-700">Teléfono de Contacto (opcional)</label>
-                            <input type="tel" id="contacto-telefono" name="contacto-telefono" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
+    <template id="gestion-beneficio-template">
+        <div class="container mx-auto p-4 md:p-6">
+             <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold" id="gestion-beneficio-title">Crear Nuevo Beneficio</h2>
+                <a href="#gestion-beneficios" class="navigate-link text-sm text-[var(--color-accent-primary)] hover:underline">&larr; Volver a Gestión de Beneficios</a>
+            </div>
+            <form id="gestion-beneficio-form" class="panel p-6 rounded-lg shadow-lg space-y-6">
+                <input type="hidden" id="gb-beneficio-id">
+                <div><label for="gb-marca-asociada" class="form-label">Marca Asociada <span class="text-red-500">*</span></label>
+                    <select id="gb-marca-asociada" name="gb-marca-asociada" required class="form-input mt-1">
+                        <option value="">Seleccionar marca...</option>
+                        <option value="marca1">SuperTienda Online</option>
+                        <option value="marca2">GastroBar Delicias</option>
+                    </select>
+                </div>
+                <div><label for="gb-nombre-beneficio" class="form-label">Nombre del Beneficio <span class="text-red-500">*</span></label><input type="text" id="gb-nombre-beneficio" value="20% Off en Cafetería Estrella" class="form-input mt-1"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label for="gb-tipo-beneficio" class="form-label">Tipo <span class="text-red-500">*</span></label><select id="gb-tipo-beneficio" class="form-input mt-1"><option selected>Descuento Porcentual</option><option>2x1</option></select></div>
+                    <div><label for="gb-valor-beneficio" class="form-label">Valor (ej: 20)</label><input type="number" id="gb-valor-beneficio" value="20" class="form-input mt-1"></div>
+                </div>
+                <div>
+                    <label for="gb-descripcion-beneficio" class="form-label">Descripción <span class="text-red-500">*</span></label>
+                    <textarea id="gb-descripcion-beneficio" rows="2" class="form-input mt-1">Aplica a todos los productos de cafetería.</textarea>
+                    <div class="mt-2">
+                        <button type="button" id="btn-generar-descripcion-ia" class="text-xs bg-[var(--color-accent-secondary)] hover:bg-[var(--color-accent-secondary-hover)] text-white py-1.5 px-3 rounded-md inline-flex items-center">
+                            <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.566.379-1.566 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.566 2.6 1.566 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.566-.379 1.566-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
+                            ✨ Generar 3 Descripciones con IA
+                        </button>
+                        <span id="spinner-descripcion-ia" class="ml-2 text-xs text-[var(--color-text-secondary)] hidden">Generando...</span>
                     </div>
-                </fieldset>
-
-                <div class="flex justify-end">
-                    <button type="submit" id="alta-marca-submit-button" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Guardar Marca
-                    </button>
+                     <div id="ia-sugerencias-container" class="mt-3 space-y-2"></div>
+                     <div id="ia-error-message" class="text-[var(--color-danger)] text-xs mt-1 hidden"></div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="btn btn-outline-accent">Cancelar</button>
+                    <button type="submit" class="btn btn-accent-primary">Guardar Beneficio</button>
                 </div>
             </form>
         </div>
     </template>
 
-    <!-- Gestion Beneficio Template -->
-    <template id="gestion-beneficio-template">
-        <div class="container mx-auto p-4 md:p-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Gestionar Beneficio (Mockup)</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <p class="mb-4 text-gray-700">Esta sección permitirá configurar un beneficio y usar herramientas IA para optimizarlo.</p>
-                
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-700 mb-2">Simulador de Impacto IA</h3>
-                    <button id="btn-ejecutar-simulacion" class="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded-md text-sm">Ejecutar Simulación</button>
-                    <div id="simulacion-ia-resultado" class="text-sm mt-2 p-3 bg-sky-50 border border-sky-200 rounded-md hidden">
-                        <!-- Resultado de la simulación aparecerá aquí -->
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-medium text-gray-700 mb-2">Recomendaciones IA para este Beneficio</h3>
-                    <ul id="recomendaciones-ia-gestion-list" class="list-disc list-inside space-y-1 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                        <!-- Recomendaciones IA se cargarán aquí -->
-                    </ul>
+    <template id="gestion-marcas-template">
+        <div class="container mx-auto p-4 md:p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-xl font-semibold">Gestión de Marcas</h1>
+                <a href="#alta-marca" class="navigate-link btn btn-accent-primary text-xs">+ Registrar Nueva Marca</a>
+            </div>
+            <div class="panel p-4 rounded-lg">
+                <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 14rem);">
+                    <table class="min-w-full compact-table">
+                        <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
+                            <tr>
+                                <th class="text-left">Nombre Comercial</th>
+                                <th class="text-left">CUIT</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-marcas-body" class="divide-y divide-[var(--color-border)]"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </template>
 
-    <!-- Generic Modal Template (Example) -->
-    <template id="modal-template">
-        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-            <div class="relative mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
-                <div class="mt-3 text-center">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Modal Title</h3>
-                    <div class="mt-2 px-7 py-3">
-                        <p class="text-sm text-gray-500" id="modal-content">
-                            Modal content goes here.
-                        </p>
+    <template id="gestion-beneficios-template">
+        <div class="container mx-auto p-4 md:p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-xl font-semibold">Gestión de Beneficios</h1>
+                <a href="#gestion-beneficio" data-mode="crear" class="navigate-link btn btn-accent-primary text-xs">+ Crear Nuevo Beneficio</a>
+            </div>
+            <div class="panel p-4 rounded-lg">
+                 <div class="overflow-x-auto table-container" style="max-height: calc(100vh - 14rem);">
+                    <table class="min-w-full compact-table">
+                        <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
+                            <tr>
+                                <th class="text-left">Nombre Beneficio</th>
+                                <th class="text-left">Marca</th>
+                                <th class="text-left">Tipo</th>
+                                <th class="text-left">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-beneficios-body" class="divide-y divide-[var(--color-border)]"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="configuracion-template">
+        <div class="container mx-auto p-4 md:p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-xl font-semibold">Configuración General</h1>
+                <a href="#dashboard" class="navigate-link text-sm text-[var(--color-accent-primary)] hover:underline">&larr; Volver al Dashboard</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="panel p-4 sm:p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium">Gestión de Usuarios</h2>
+                        <button class="btn btn-accent-primary text-xs py-1 px-2">+ Nuevo Usuario</button>
                     </div>
-                    <div class="items-center px-4 py-3">
-                        <button id="modal-close-button" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                            Close
-                        </button>
+                    <div class="overflow-x-auto table-container" style="max-height: 200px;">
+                        <table class="min-w-full compact-table">
+                            <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
+                                <tr>
+                                    <th class="text-left">Nombre</th><th class="text-left">Email</th><th class="text-left">Rol</th><th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-usuarios-body" class="divide-y divide-[var(--color-border)]"></tbody>
+                        </table>
                     </div>
                 </div>
+                <div class="panel p-4 sm:p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium">Gestión de Perfiles/Roles</h2>
+                        <button class="btn btn-accent-primary text-xs py-1 px-2">+ Nuevo Perfil</button>
+                    </div>
+                    <div class="overflow-x-auto table-container" style="max-height: 200px;">
+                        <table class="min-w-full compact-table">
+                            <thead class="sticky top-0 bg-[var(--color-bg-surface)]">
+                                <tr>
+                                    <th class="text-left">Perfil</th><th class="text-left">Descripción</th><th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-perfiles-body" class="divide-y divide-[var(--color-border)]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel p-4 sm:p-6 rounded-lg mt-6">
+                <h2 class="text-lg font-medium mb-4">Cambiar Mi Contraseña</h2>
+                <form id="cambiar-contrasena-form" class="space-y-4 max-w-sm">
+                    <div><label for="current-password" class="form-label">Contraseña Actual</label><input type="password" id="current-password" required class="form-input mt-1"></div>
+                    <div><label for="new-password" class="form-label">Nueva Contraseña</label><input type="password" id="new-password" required class="form-input mt-1"></div>
+                    <div><label for="confirm-password" class="form-label">Confirmar Nueva Contraseña</label><input type="password" id="confirm-password" required class="form-input mt-1"></div>
+                    <div class="pt-2"><button type="submit" class="btn btn-accent-primary">Actualizar Contraseña</button></div>
+                </form>
             </div>
         </div>
     </template>
