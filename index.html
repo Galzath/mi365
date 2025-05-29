@@ -25,8 +25,12 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-3">
+                    <button id="theme-toggle-button" aria-label="Toggle theme" class="p-2 rounded-full hover:bg-[rgba(var(--color-text-primary-rgb,224,230,241),0.07)] text-[var(--color-text-secondary)] focus:outline-none">
+                        <svg id="theme-toggle-sun-icon" class="h-5 w-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.464L4.343 15.17a1 1 0 101.414 1.414l.707-.707a1 1 0 00-1.414-1.414zM14.95 4.343L15.657 3.636a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
+                        <svg id="theme-toggle-moon-icon" class="h-5 w-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    </button>
                     <div id="user-menu" class="relative hidden">
-                        <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none p-1 rounded-full hover:bg-[rgba(255,255,255,0.05)]">
+                        <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none p-1 rounded-full hover:bg-[rgba(var(--color-text-primary-rgb,224,230,241),0.07)]">
                             <img id="user-avatar" class="h-8 w-8 rounded-full object-cover ring-1 ring-[var(--color-accent-primary)]" src="https://placehold.co/80x80/7D8590/E6EDF3?text=U" alt="User Avatar">
                             <span id="user-menu-text" class="text-sm font-medium">Usuario</span>
                             <svg class="h-5 w-5 opacity-70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -207,6 +211,7 @@
                             <tr>
                                 <th class="text-left">Nombre Comercial</th>
                                 <th class="text-left">CUIT</th>
+                                <th class="text-left">N° Beneficios</th>
                                 <th class="text-left">Estado</th>
                                 <th class="text-center">Acciones</th>
                             </tr>

@@ -3,17 +3,18 @@ let currentLoggedInUser = '';
 let isLoggedIn = false;
 let brandToEdit = null; // Variable to store brand being edited
 
-// LocalStorage Key
+// LocalStorage Keys
 const MARCAS_STORAGE_KEY = 'mi365_marcas';
+const THEME_STORAGE_KEY = 'mi365_theme';
 
 // DOM Elements Cache
 let userMenu, userMenuButton, userMenuText, logoutDropdown, logoutButton;
 let loginSection, appContentSection, mainContent, mainNavigation;
+let themeToggleButton, themeToggleSunIcon, themeToggleMoonIcon; // Theme toggle elements
 
 // --- Sample Data (Se mantienen los datos de ejemplo) ---
 const sampleKpis = { beneficiosActivos: 22, acuerdosVigentes: 18, marcasAsignadas: 10, alertasCriticas: 2, tareasPendientes: 5 };
 
-// Default structure for brands, now including all form fields
 let sampleMarcas = [
     { id: 1, nombre: "SuperTienda Online", cuit: "30-11223344-5", domicilioLegal: "Av. Siempreviva 742", codigoPostal: "B1675", contactoNombre: "Lisa Simpson", contactoEmail: "lisa@example.com", estado: "Activa", estadoColor: "green" },
     { id: 2, nombre: "GastroBar Delicias", cuit: "30-55667788-9", domicilioLegal: "Calle Falsa 123", codigoPostal: "C1000", contactoNombre: "Bart Simpson", contactoEmail: "bart@example.com", estado: "Pendiente", estadoColor: "yellow" },
@@ -24,8 +25,9 @@ let sampleMarcas = [
 const sampleBeneficios = [
     { id: 101, nombre: "30% Off Almuerzos", marca: "GastroBar Delicias", tipo: "Descuento %", estado: "Activo" },
     { id: 102, nombre: "Envío Gratis > $5K", marca: "SuperTienda Online", tipo: "Condicional", estado: "Activo" },
-    { id: 103, nombre: "2x1 CineMartes", marca: "Cines Metropolis", tipo: "2x1", estado: "Programado" },
+    { id: 103, nombre: "2x1 CineMartes", marca: "Cines Metropolis", tipo: "2x1", estado: "Programado" }, // Note: "Cines Metropolis" is not in sampleMarcas
     { id: 104, nombre: "Liquidación Invierno", marca: "Moda Urbana", tipo: "Descuento %", estado: "Inactivo" },
+    { id: 105, nombre: "Otro Beneficio SuperTienda", marca: "SuperTienda Online", tipo: "Descuento %", estado: "Activo"}
 ];
 const sampleAlertas = [
     { texto: "Acuerdo 'Promo Verano Flash' vence mañana.", tipo: "critical", icon: "🚨" },
@@ -57,9 +59,8 @@ function loadMarcasFromLocalStorage() {
         try {
             const parsedMarcas = JSON.parse(storedMarcas);
             if (Array.isArray(parsedMarcas)) {
-                // Ensure all loaded marcas have the new fields, providing defaults if missing from older data
                 sampleMarcas = parsedMarcas.map(marca => ({
-                    id: marca.id || Date.now(), // Should always have id
+                    id: marca.id || Date.now(),
                     nombre: marca.nombre || "",
                     cuit: marca.cuit || "",
                     domicilioLegal: marca.domicilioLegal || "",
@@ -72,11 +73,30 @@ function loadMarcasFromLocalStorage() {
             }
         } catch (error) {
             console.error("Error parsing marcas from localStorage:", error);
-            // Keep default sampleMarcas if parsing fails
         }
     }
 }
 
+// --- Theme Management ---
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        if (themeToggleSunIcon) themeToggleSunIcon.classList.remove('hidden');
+        if (themeToggleMoonIcon) themeToggleMoonIcon.classList.add('hidden');
+    } else { 
+        document.body.classList.remove('light-mode');
+        if (themeToggleSunIcon) themeToggleSunIcon.classList.add('hidden');
+        if (themeToggleMoonIcon) themeToggleMoonIcon.classList.remove('hidden');
+    }
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+}
+
+function initializeTheme() {
+    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let currentTheme = storedTheme || (systemPrefersDark ? 'dark' : 'dark'); // Default to dark
+    applyTheme(currentTheme);
+}
 
 // --- Template Injection Function ---
 function injectTemplate(templateId, targetElement) {
@@ -95,6 +115,7 @@ function injectTemplate(templateId, targetElement) {
 }
 
 // --- Helper Functions ---
+// ... (createAlertListItem remains unchanged)
 function createAlertListItem(alerta) {
     const li = document.createElement('li');
     let bgColor = 'bg-sky-500/10'; 
@@ -136,19 +157,22 @@ function populateTablaGestionMarcas(marcas) {
     if (!tbody) return;
     tbody.innerHTML = '';
     marcas.forEach(marca => {
+        const benefitCount = sampleBeneficios.filter(beneficio => beneficio.marca === marca.nombre).length;
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="compact-table">${marca.nombre}</td>
             <td class="compact-table">${marca.cuit}</td>
+            <td class="compact-table text-center">${benefitCount}</td>
             <td class="compact-table"><span class="px-2 py-0.5 text-xxs font-semibold rounded-full bg-${marca.estadoColor}-500/20 text-${marca.estadoColor}-400">${marca.estado}</span></td>
             <td class="compact-table text-center">
+                {/* <!-- TODO: 'Ver' button could navigate to a brand detail page showing benefits --> */}
                 <button class="text-[var(--color-accent-primary)] hover:text-[var(--color-accent-primary-hover)] text-xs">Ver</button>
                 <button class="text-[var(--color-accent-primary)] hover:text-[var(--color-accent-primary-hover)] text-xs ml-2" onclick="window.location.hash='#alta-marca?id=${marca.id}'">Editar</button>
             </td>`;
         tbody.appendChild(tr);
     });
 }
-// ... (rest of populate functions remain the same) ...
+// ... (rest of populate functions remain largely unchanged) ...
 function populateTablaGestionBeneficios(beneficios) {
     const tbody = document.getElementById('tabla-beneficios-body');
     if (!tbody) return;
@@ -206,6 +230,7 @@ function populateTablaPerfiles(perfiles) {
 }
 
 // --- UI State Update Functions ---
+// ... (updateNavbarUI, handleLoginSuccess, handleLogout remain unchanged)
 function updateNavbarUI() {
     const dropdownUserEmail = document.getElementById('dropdown-user-email');
     if (isLoggedIn) {
@@ -242,6 +267,7 @@ function handleLogout() {
 }
 
 // --- Event Listeners Setup ---
+// ... (attachLoginFormListener, attachUserMenuListeners remain unchanged)
 function attachLoginFormListener() {
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -272,6 +298,7 @@ function attachUserMenuListeners() {
         });
     }
 }
+
 
 function setupAltaMarcaFormListeners() {
     const form = document.getElementById('alta-marca-form');
@@ -389,15 +416,15 @@ function setupAltaMarcaFormListeners() {
             const brandIndex = sampleMarcas.findIndex(m => m.id === idToUpdate);
             if (brandIndex !== -1) {
                 sampleMarcas[brandIndex] = { 
-                    ...sampleMarcas[brandIndex], // Preserve existing fields like estado, estadoColor
+                    ...sampleMarcas[brandIndex], 
                     ...marcaData, 
-                    id: idToUpdate // Ensure ID is not overwritten by marcaData if it doesn't have it
+                    id: idToUpdate 
                 };
             }
         } else {
-            marcaData.id = Date.now(); // Simple unique ID for new brands
-            marcaData.estado = "Pendiente"; // Default estado for new brands
-            marcaData.estadoColor = "yellow"; // Default estadoColor for new brands
+            marcaData.id = Date.now(); 
+            marcaData.estado = "Pendiente"; 
+            marcaData.estadoColor = "yellow"; 
             sampleMarcas.push(marcaData);
         }
         
@@ -416,6 +443,7 @@ function setupAltaMarcaFormListeners() {
     });
 }
 
+// ... (setupCambiarContrasenaFormListeners, handleGenerarDescripcionIA remain unchanged) ...
 function setupCambiarContrasenaFormListeners() {
     const form = document.getElementById('cambiar-contrasena-form');
     if(form) {
@@ -583,20 +611,41 @@ function loadContent(page) {
             }
             const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
             const beneficioId = urlParams.get('id');
+            const beneficioExistente = beneficioId ? sampleBeneficios.find(b => b.id == beneficioId) : null;
+            const marcaPreseleccionada = beneficioExistente ? beneficioExistente.marca : null;
+
             const titleElement = document.getElementById('gestion-beneficio-title');
             const form = document.getElementById('gestion-beneficio-form');
             const marcaSelect = document.getElementById('gb-marca-asociada');
 
-            if (beneficioId) { 
+            if (marcaSelect) {
+                marcaSelect.innerHTML = ''; // Clear existing options
+                const defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Seleccionar marca...";
+                defaultOption.disabled = true;
+                marcaSelect.appendChild(defaultOption);
+
+                sampleMarcas.forEach(marca => {
+                    const option = document.createElement('option');
+                    option.value = marca.nombre; // Using nombre as value to match existing logic
+                    option.textContent = marca.nombre;
+                    if (marcaPreseleccionada === marca.nombre) {
+                        option.selected = true;
+                    }
+                    marcaSelect.appendChild(option);
+                });
+                if (!marcaPreseleccionada) { // If new or no matching brand
+                     marcaSelect.value = "";
+                }
+            }
+
+            if (beneficioId && beneficioExistente) { 
                 if(titleElement) titleElement.textContent = `Editar Beneficio ID: ${beneficioId}`;
-                const beneficioExistente = sampleBeneficios.find(b => b.id == beneficioId);
-                if(beneficioExistente && form) {
+                if(form) {
                     form.elements['gb-nombre-beneficio'].value = beneficioExistente.nombre;
                     form.elements['gb-tipo-beneficio'].value = beneficioExistente.tipo; 
-                    if(marcaSelect) {
-                        const opt = Array.from(marcaSelect.options).find(o => o.textContent === beneficioExistente.marca);
-                        if(opt) opt.selected = true;
-                    }
+                    // Marca is handled by the dynamic population above
                 }
             } else { 
                  if(titleElement) titleElement.textContent = "Crear Nuevo Beneficio";
@@ -660,16 +709,34 @@ document.addEventListener('DOMContentLoaded', () => {
     appContentSection = document.getElementById('app-content-section');
     mainContent = document.getElementById('main-content');
     mainNavigation = document.getElementById('main-navigation');
+    
+    themeToggleButton = document.getElementById('theme-toggle-button');
+    themeToggleSunIcon = document.getElementById('theme-toggle-sun-icon');
+    themeToggleMoonIcon = document.getElementById('theme-toggle-moon-icon');
 
-    if (!mainContent || !loginSection || !appContentSection || !userMenu || !mainNavigation) {
-        console.error("Faltan elementos críticos del layout. La aplicación podría no funcionar.");
+    if (!mainContent || !loginSection || !appContentSection || !userMenu || !mainNavigation ) {
+        console.error("Faltan elementos críticos del layout. La aplicación podría no funcionar correctamente.");
         document.body.innerHTML = "<p style='text-align:center; padding-top: 50px; font-size: 18px;'>Error: Faltan componentes de la aplicación.</p>";
-        return;
+        return; 
+    }
+    if (!themeToggleButton || !themeToggleSunIcon || !themeToggleMoonIcon) {
+        console.error("Elementos del toggle de tema no encontrados. El toggle de tema podría no funcionar.");
     }
     
-    loadMarcasFromLocalStorage(); // Load marcas before first route
+    loadMarcasFromLocalStorage(); 
+    initializeTheme(); 
     updateNavbarUI();
     attachUserMenuListeners();
+
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', () => {
+            if (document.body.classList.contains('light-mode')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+    }
     
     document.addEventListener('click', (event) => {
         if (userMenu && !userMenu.contains(event.target) && logoutDropdown && !logoutDropdown.classList.contains('hidden')) {
@@ -678,10 +745,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('hashchange', router);
-    router(); // Initial call to load content based on current hash
+    router(); 
 });
 
-// --- Toast Notification Function ---
 function showToast(message, type = 'info', duration = 3000) {
     const container = document.getElementById('toast-container');
     if (!container) {
