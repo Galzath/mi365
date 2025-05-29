@@ -1,28 +1,92 @@
 :root {
-    /* Paleta NovaTech Blue & Graphite */
-    --color-bg-main: #0D1117; /* Casi negro, grafito muy oscuro para el fondo del body */
-    --color-bg-surface: #161B22; /* Grafito oscuro para paneles y superficies principales */
-    --color-bg-header: #0D1117; /* Mismo que el fondo, o ligeramente diferente si se necesita contraste */
-    --color-bg-input: #0D1117; /* Inputs pueden tener el mismo fondo que el header */
+    /* --- Dark Mode Colors (Default) --- */
+    --color-bg-main-dark: #0A192F; /* Very dark navy blue, almost black */
+    --color-bg-surface-dark: #172A45; /* Dark slate blue for panels, cards */
+    --color-bg-header-dark: #0A192F; /* Same as main background */
+    --color-bg-input-dark: #0A192F;
 
-    --color-text-primary: #E6EDF3; /* Blanco grisáceo para texto principal */
-    --color-text-secondary: #7D8590; /* Gris medio para texto secundario y placeholders */
-    --color-text-on-accent: #FFFFFF; /* Blanco puro para texto sobre acentos */
+    --color-text-primary-dark: #E0E6F1; /* Light grayish blue, off-white */
+    --color-text-primary-rgb-dark: 224, 230, 241; 
+    --color-text-secondary-dark: #A8B2D1; /* Slightly darker grayish blue */
+    --color-text-on-accent-dark: #FFFFFF; /* Pure white for text on primary blue buttons */
+    --color-text-on-warning-dark: #212529; /* Dark text for warning toast */
 
-    --color-border: #30363D; /* Borde sutil para paneles y elementos */
-    --color-border-input: #484F58; /* Borde para inputs */
+
+    --color-border-dark: #303C55; /* Subtle blueish border */
+    --color-border-input-dark: #4A5C7A;
+
+    --color-accent-primary-dark: #0D6EFD; /* Corporate Blue */
+    --color-accent-primary-rgb-dark: 13, 110, 253; 
+    --color-accent-primary-hover-dark: #0B5ED7; /* Darker Corporate Blue */
+    --color-accent-secondary-dark: #6C757D; /* Corporate Gray for secondary actions */
+    --color-accent-secondary-hover-dark: #5A6268; /* Darker Corporate Gray */
+
+    --color-success-dark: #198754; /* Bootstrap Green */
+    --color-success-rgb-dark: 25, 135, 84;
+    --color-warning-dark: #FFC107; /* Bootstrap Yellow */
+    --color-warning-rgb-dark: 255, 193, 7;
+    --color-danger-dark: #DC3545; /* Bootstrap Red */
+    --color-danger-rgb-dark: 220, 53, 69;
+    --color-info-dark: #0DCAF0; /* Bootstrap Cyan */
+    --color-info-rgb-dark: 13, 202, 240;
+
+    /* Generic variables using dark versions by default */
+    --color-bg-main: var(--color-bg-main-dark);
+    --color-bg-surface: var(--color-bg-surface-dark);
+    --color-bg-header: var(--color-bg-header-dark);
+    --color-bg-input: var(--color-bg-input-dark);
+    --color-text-primary: var(--color-text-primary-dark);
+    --color-text-primary-rgb: var(--color-text-primary-rgb-dark);
+    --color-text-secondary: var(--color-text-secondary-dark);
+    --color-text-on-accent: var(--color-text-on-accent-dark);
+    --color-text-on-warning: var(--color-text-on-warning-dark);
+    --color-border: var(--color-border-dark);
+    --color-border-input: var(--color-border-input-dark);
+    --color-accent-primary: var(--color-accent-primary-dark);
+    --color-accent-primary-rgb: var(--color-accent-primary-rgb-dark);
+    --color-accent-primary-hover: var(--color-accent-primary-hover-dark);
+    --color-accent-secondary: var(--color-accent-secondary-dark);
+    --color-accent-secondary-hover: var(--color-accent-secondary-hover-dark);
+    --color-success: var(--color-success-dark);
+    --color-success-rgb: var(--color-success-rgb-dark);
+    --color-warning: var(--color-warning-dark);
+    --color-warning-rgb: var(--color-warning-rgb-dark);
+    --color-danger: var(--color-danger-dark);
+    --color-danger-rgb: var(--color-danger-rgb-dark);
+    --color-info: var(--color-info-dark);
+    --color-info-rgb: var(--color-info-rgb-dark);
     --color-border-input-focus: var(--color-accent-primary);
+}
 
-    --color-accent-primary: #17d894; /* Cian/Turquesa vibrante */
-    --color-accent-primary-hover: #17d894; /* Cian/Turquesa más oscuro para hover */
-    --color-accent-secondary: #549adc; /* Magenta/Violeta eléctrico */
-    --color-accent-secondary-hover: #549adc;
+body.light-mode {
+    /* --- Light Mode Colors --- */
+    --color-bg-main-light: #FFFFFF;
+    --color-bg-surface-light: #F8F9FA; 
+    --color-bg-header-light: #FFFFFF;
+    --color-bg-input-light: #FFFFFF;
 
-    /* Colores para estados (pueden ajustarse) */
-    --color-success: #34D399; /* Emerald 400 */
-    --color-warning: #FBBF24; /* Amber 400 */
-    --color-danger: #F87171;  /* Red 400 */
-    --color-info: var(--color-accent-primary);
+    --color-text-primary-light: #212529; 
+    --color-text-primary-rgb-light: 33, 37, 41; 
+    --color-text-secondary-light: #6C757D; 
+    --color-text-on-accent-light: #FFFFFF; 
+    --color-text-on-warning-light: #212529; /* Dark text for warning toast */
+
+
+    --color-border-light: #DEE2E6; 
+    --color-border-input-light: #CED4DA;
+
+    /* Generic variables redefined for light mode */
+    --color-bg-main: var(--color-bg-main-light);
+    --color-bg-surface: var(--color-bg-surface-light);
+    --color-bg-header: var(--color-bg-header-light);
+    --color-bg-input: var(--color-bg-input-light);
+    --color-text-primary: var(--color-text-primary-light);
+    --color-text-primary-rgb: var(--color-text-primary-rgb-light);
+    --color-text-secondary: var(--color-text-secondary-light);
+    --color-text-on-accent: var(--color-text-on-accent-light);
+    --color-text-on-warning: var(--color-text-on-warning-light);
+    --color-border: var(--color-border-light);
+    --color-border-input: var(--color-border-input-light);
 }
 
 body {
@@ -34,8 +98,11 @@ body {
     line-height: 1.5;
 }
 
+/* باقی CSS بدون تغییر باقی می ماند */
+/* ... (rest of CSS remains unchanged from previous correct version) ... */
+
 /* Cabecera Principal */
-nav.shadow-sm { /* Selector del HTML del dev */
+nav.shadow-sm {
     background-color: var(--color-bg-header) !important;
     border-bottom: 1px solid var(--color-border);
 }
@@ -48,9 +115,7 @@ nav.shadow-sm { /* Selector del HTML del dev */
 .logo-mi365-header .logo-365-number {
     color: var(--color-accent-primary); 
     background-color: transparent;
-    /* Opcional: un pequeño borde o efecto de brillo */
-    /* text-shadow: 0 0 5px var(--color-accent-primary); */
-    padding: 1px 0px; /* Ajustar para que no tenga tanto fondo */
+    padding: 2px 4px;
     margin-left: 1px;
     font-size: 0.9em;
     font-weight: 800;
@@ -63,7 +128,7 @@ nav.shadow-sm { /* Selector del HTML del dev */
 .logo-mi365-login .logo-365-number {
     color: var(--color-accent-primary);
     background-color: transparent;
-    padding: 1px 0px;
+    padding: 2px 4px;
     margin-left: 1px;
     font-size: 0.9em;
     font-weight: 800;
@@ -73,20 +138,20 @@ nav.shadow-sm { /* Selector del HTML del dev */
 .main-header-link { 
     color: var(--color-text-secondary) !important; 
     opacity: 0.9;
+    padding: 0.5rem 0.75rem; 
+    border-radius: 0.375rem; 
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 .main-header-link:hover {
     opacity: 1;
     color: var(--color-accent-primary) !important; 
-    background-color: rgba(34, 211, 238, 0.05) !important; /* Muy sutil hover de fondo */
+    background-color: rgba(var(--color-accent-primary-rgb), 0.07) !important;
 }
 .main-header-link.active { 
     opacity: 1;
     font-weight: 600 !important;
     color: var(--color-accent-primary) !important; 
-    border-bottom: 2px solid var(--color-accent-primary);
-    background-color: transparent !important;
-    border-radius: 0 !important; /* Para que el borde inferior sea limpio */
-    padding-bottom: calc(0.5rem - 2px); /* Ajustar padding para el borde */
+    background-color: rgba(var(--color-accent-primary-rgb), 0.15);
 }
 
 /* Menú de usuario en la cabecera */
@@ -104,14 +169,14 @@ nav.shadow-sm { /* Selector del HTML del dev */
     color: var(--color-text-primary) !important; 
 }
 #logout-dropdown a:hover {
-    background-color: rgba(34, 211, 238, 0.1) !important; 
+    background-color: rgba(var(--color-accent-primary-rgb), 0.1) !important;
     color: var(--color-accent-primary) !important;
 }
 #logout-dropdown #logout-button { 
     color: var(--color-danger) !important;
 }
 #logout-dropdown #logout-button:hover {
-    background-color: rgba(248, 113, 113, 0.1) !important; 
+    background-color: rgba(var(--color-danger-rgb), 0.1) !important;
 }
 
 .form-label {
@@ -126,41 +191,37 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     background-color: var(--color-bg-input);
     border: 1px solid var(--color-border-input);
     color: var(--color-text-primary);
-    border-radius: 0.375rem; /* rounded-md */
-    padding: 0.625rem 0.75rem; /* py-2.5 px-3 */
-    font-size: 0.875rem; /* text-sm */
+    border-radius: 0.375rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
 }
 input:focus, select:focus, textarea:focus {
     border-color: var(--color-accent-primary) !important; 
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2); /* Sombra de foco con el acento */
+    box-shadow: 0 0 0 3px rgba(var(--color-accent-primary-rgb), 0.25);
     outline: none;
 }
-/* Placeholder color */
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+::placeholder { 
   color: var(--color-text-secondary);
   opacity: 0.7; 
 }
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
+:-ms-input-placeholder { 
   color: var(--color-text-secondary);
   opacity: 0.7;
 }
-::-ms-input-placeholder { /* Microsoft Edge */
+::-ms-input-placeholder { 
   color: var(--color-text-secondary);
   opacity: 0.7;
 }
 
-
-/* Botones primarios (acento primario) */
+/* Botones */
 .btn-accent-primary {
     background-color: var(--color-accent-primary) !important;
-    color: var(--color-bg-header) !important; /* Texto oscuro para contraste con teal brillante */
+    color: var(--color-text-on-accent) !important;
     font-weight: 600;
 }
 .btn-accent-primary:hover {
     background-color: var(--color-accent-primary-hover) !important;
 }
-
-/* Botones secundarios (outline con acento primario) */
 .btn-outline-accent {
     background-color: transparent !important;
     border: 2px solid var(--color-accent-primary) !important;
@@ -168,29 +229,31 @@ input:focus, select:focus, textarea:focus {
     font-weight: 600;
 }
 .btn-outline-accent:hover {
-    background-color: rgba(34, 211, 238, 0.1) !important;
+    background-color: rgba(var(--color-accent-primary-rgb), 0.1) !important;
 }
 
-.panel {
+/* Panels and Cards */
+.panel, .kpi-card {
     background-color: var(--color-bg-surface);
     border: 1px solid var(--color-border);
-    border-radius: 0.75rem; /* rounded-xl */
 }
 .kpi-card {
-    background-color: var(--color-bg-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem; /* rounded-lg */
+    border-radius: 0.5rem;
+}
+.panel {
+     border-radius: 0.75rem;
 }
 .kpi-card .kpi-value {
     color: var(--color-accent-primary);
 }
 
+/* Tables */
 .table-container {
-    max-height: 200px; /* Ajustar altura para densidad */
+    max-height: 200px; 
     overflow-y: auto;
 }
 .compact-table th {
-    background-color: var(--color-bg-surface); /* Para que el sticky header tenga fondo */
+    background-color: var(--color-bg-surface); 
     color: var(--color-text-secondary);
     text-transform: uppercase;
     font-weight: 600;
@@ -203,29 +266,72 @@ input:focus, select:focus, textarea:focus {
 .compact-table tbody tr:last-child td {
     border-bottom: none;
 }
+.table-container::-webkit-scrollbar-thumb { 
+    background-color: var(--color-text-secondary); 
+    border-radius: 3px; 
+}
 .table-container::-webkit-scrollbar { width: 6px; }
 .table-container::-webkit-scrollbar-track { background: transparent; }
-.table-container::-webkit-scrollbar-thumb { background-color: var(--color-text-secondary); border-radius: 3px; }
 
-/* Clases de Tailwind usadas en el HTML del dev, asegurar que se vean bien con la nueva paleta */
+/* Tailwind utility overrides / adjustments using generic variables */
 .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
-html .shadow-sm { box-shadow: 0 1px 2px 0 rgba(255,255,255,0.03); } /* Sombra más sutil para dark */
+body.light-mode .shadow-sm, html[class="light-mode"] .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.06); }
+html:not(.light-mode) .shadow-sm { box-shadow: 0 1px 2px 0 rgba(var(--color-text-primary-rgb),0.07); }
+
 
 .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
-html .shadow-md { box-shadow: 0 4px 6px -1px rgba(255,255,255,0.04), 0 2px 4px -1px rgba(255,255,255,0.03); }
+body.light-mode .shadow-md, html[class="light-mode"] .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); }
+html:not(.light-mode) .shadow-md { box-shadow: 0 4px 6px -1px rgba(var(--color-text-primary-rgb),0.08), 0 2px 4px -1px rgba(var(--color-text-primary-rgb),0.05); }
 
-.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
-html .shadow-lg { box-shadow: 0 10px 15px -3px rgba(255,255,255,0.03), 0 4px 6px -2px rgba(255,255,255,0.02); }
 
-.shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
-html .shadow-xl { box-shadow: 0 20px 25px -5px rgba(255,255,255,0.02), 0 10px 10px -5px rgba(255,255,255,0.01); }
-
-.text-indigo-600 { color: var(--color-accent-primary); } /* Reemplazar indigo con nuestro acento primario */
-.hover\:bg-gray-200:hover { background-color: rgba(255,255,255,0.05); } /* Ajustar hover para links de header */
-.focus\:ring-indigo-500:focus { /* Para inputs */
+.text-indigo-600 { color: var(--color-accent-primary) !important; } 
+.hover\:bg-gray-200:hover { background-color: rgba(var(--color-text-primary-rgb), 0.07); } 
+.focus\:ring-indigo-500:focus { 
     border-color: var(--color-accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2) !important;
+    box-shadow: 0 0 0 3px rgba(var(--color-accent-primary-rgb), 0.25) !important;
 }
 .bg-indigo-600 { background-color: var(--color-accent-primary) !important; }
 .hover\:bg-indigo-700:hover { background-color: var(--color-accent-primary-hover) !important; }
 .focus\:ring-offset-2:focus { ring-offset-color: var(--color-bg-surface) !important; }
+
+/* Toast Notification System */
+.toast-message {
+    padding: 0.75rem 1rem; 
+    border-radius: 0.375rem; 
+    /* color: var(--color-text-on-accent); Default, overridden by specific types if needed */
+    font-size: 0.875rem; 
+    font-weight: 500;
+    box-shadow: 0 4px 6px -1px rgba(var(--color-text-primary-rgb),0.08), 0 2px 4px -1px rgba(var(--color-text-primary-rgb),0.05);
+    opacity: 0.95;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    margin-bottom: 0.5rem; 
+}
+body.light-mode .toast-message {
+     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); 
+}
+
+.toast-message.fade-out { 
+    opacity: 0;
+    transform: scale(0.95);
+}
+.toast-success { 
+    background-color: var(--color-success); 
+    color: var(--color-text-on-accent); /* Ensure contrast */
+}
+.toast-error { 
+    background-color: var(--color-danger); 
+    color: var(--color-text-on-accent); /* Ensure contrast */
+}
+.toast-info { 
+    background-color: var(--color-info); 
+    color: var(--color-text-on-accent); /* Ensure contrast */
+}
+.toast-warning { 
+    background-color: var(--color-warning); 
+    color: var(--color-text-on-warning); /* Use specific text color for warning */
+}
+
+/* Specific Light mode shadow adjustments if needed for other elements */
+body.light-mode .panel, body.light-mode .kpi-card {
+    /* box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1); */
+}
